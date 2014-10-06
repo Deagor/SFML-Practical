@@ -61,6 +61,6 @@ void BouncingTriangle::CheckBounds()
 		|| shape.getPoint(1).y <= 0 || shape.getPoint(1).y >= 600
 		|| shape.getPoint(2).y <= 0 || shape.getPoint(2).y >= 600)
 	{
-		//velocityY *= -1;
+		velocityY *= -1;
 	}
 }

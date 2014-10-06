@@ -16,7 +16,6 @@ public:
 	sf::Vector2f getPosition(){ return mPosition; }
 #pragma endregion
 
-
 	void Draw(sf::RenderWindow* wind){ wind->draw(shape); }
 
 	//Pure virtuals
