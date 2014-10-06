@@ -10,6 +10,7 @@ protected:
 	float m_baseCubeLength;
 	float m_radiusBarrel;
 	float m_heightAboveGround;
+	Ogre::Vector3 m_direction;
 	Ogre::SceneNode * m_gunBarrel;
 	
 	public:
@@ -25,6 +26,7 @@ protected:
 	float getRadiusBarrel();
 	float getBaseCubeLength();
 	float getHeightAboveGround();
+	Ogre::SceneNode* getGunBarrel() { return m_gunBarrel; }
 		
 	~Cannon();
 

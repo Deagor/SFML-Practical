@@ -30,6 +30,8 @@ Cannon::Cannon(Ogre::SceneNode * myGunBarrel, Ogre::Vector3 myPosition,float cub
 	m_gunBarrel = myGunBarrel;
 	m_gunBarrel->setPosition(m_position);
 	m_heightAboveGround = heightAboveGround;
+
+	m_direction = m_orientation * (m_gunBarrel->getPosition() / 100);
 	rotate();
 }
 

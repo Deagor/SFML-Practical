@@ -297,7 +297,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	{// Call the rotate method from the Cannon class
 		myCannon->rotate(mKeyboard);  
 	}
-	
+
 	missileVector.at(0)->Update();
 	if(missileVector.at(0)->getNeedsReset())
 	{
@@ -310,9 +310,15 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 {
 
-	if(arg.key == OIS::KC_SPACE){ missileVector.at(0)->ToggleMove(); }
+	if(arg.key == OIS::KC_SPACE)
+	{ 
+		Ogre::Vector3 veloVect = (Ogre::Vector3::UNIT_Y *(myCannon->getLengthBarrel() /2));
+		veloVect.normalise();
+		missileVector.at(0)->setVelocity(myCannon->getGunBarrel()->getOrientation() * veloVect);
+		missileVector.at(0)->ToggleMove(); 
+	}
 	if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
-
+	if(arg.key == OIS::KC_U){missileVector.at(0)->Reset(myCannon); missileVector.at(0)->ToggleMove();}
 	switch(arg.key)
 	{
 	case OIS::KC_X:
