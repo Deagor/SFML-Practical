@@ -265,6 +265,7 @@ bool BaseApplication::setup(void)
 //-------------------------------------------------------------------------------------
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+	gravEffect = -9.81f * evt.timeSinceLastFrame;
 	if(mWindow->isClosed())
 		return false;
 
@@ -309,16 +310,15 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 {
-
+	
 	if(arg.key == OIS::KC_SPACE)
 	{ 
-		Ogre::Vector3 veloVect = (Ogre::Vector3::UNIT_Y *(myCannon->getLengthBarrel() /2));
-		veloVect.normalise();
-		missileVector.at(0)->setVelocity(myCannon->getGunBarrel()->getOrientation() * veloVect);
-		missileVector.at(0)->ToggleMove(); 
+		missileVector.at(0)->setVelocity(myCannon->getGunBarrel()->getOrientation() * Ogre::Vector3::UNIT_Y);
+		missileVector.at(0)->SetGravEffect(gravEffect);
+		missileVector.at(0)->SetMove(true); 
 	}
 	if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
-	if(arg.key == OIS::KC_U){missileVector.at(0)->Reset(myCannon); missileVector.at(0)->ToggleMove();}
+	if(arg.key == OIS::KC_L){missileVector.at(0)->Reset(myCannon); missileVector.at(0)->SetMove(false);}
 	switch(arg.key)
 	{
 	case OIS::KC_X:
@@ -327,12 +327,14 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 	case OIS::KC_U:
 		// Allow the cannon to rotate if X, C, Y or U keys are pressed
 		moveTurret=true;
-		missileVector.at(0)->setNeedsReset(true);
+		if(!missileVector.at(0)->isAllowedMove())
+		{missileVector.at(0)->setNeedsReset(true);}
 		break;
 	default:
 		// Don't allow cannon to move otherwise
 		moveTurret=false;
-		missileVector.at(0)->setNeedsReset(false);
+		if(!missileVector.at(0)->isAllowedMove())
+		{missileVector.at(0)->setNeedsReset(false);}
 		break;
 	}
 

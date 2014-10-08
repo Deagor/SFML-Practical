@@ -21,13 +21,15 @@ public:
 	~Missile();
 	void Update();
 	void Reset(Cannon* myCannon);
-	void ToggleMove();
+	void SetMove(bool setTo);
+	void SetGravEffect(float effect);
 	
 private:
 	Ogre::Vector3 mVelocity;
 	Ogre::SceneNode *mNode;
 	bool mAllowedMove;
 	bool mNeedsReset;
+	Ogre::Vector3 mGravEffect;
 };
 
 #endif

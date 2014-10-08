@@ -67,6 +67,7 @@ void Missile::Update()
 {
 	if(mAllowedMove)
 	{
+		mVelocity += mGravEffect;
 		Ogre::Vector3 currentPos = mNode->getPosition();
 		mNode->setPosition(currentPos + mVelocity);
 	}
@@ -77,7 +78,12 @@ void Missile::Reset(Cannon* myCannon)
 	mNode->setPosition(Ogre::Vector3(0, myCannon->getBaseCubeLength(), 0)+ myCannon->getLengthBarrel()*(myCannon->getOrientation()*(Ogre::Vector3::UNIT_Y)));
 }
 
-void Missile::ToggleMove()
+void Missile::SetMove(bool setTo)
 {
-	mAllowedMove = !mAllowedMove;
+	mAllowedMove = setTo;
+}
+
+void Missile::SetGravEffect(float effect)
+{
+	mGravEffect = Ogre::Vector3(0,effect,0);
 }
