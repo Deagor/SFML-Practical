@@ -69,7 +69,7 @@ void Missile::Update()
 	{
 		mVelocity += mGravEffect;
 		Ogre::Vector3 currentPos = mNode->getPosition();
-		mNode->setPosition(currentPos + mVelocity);
+		mNode->setPosition(currentPos + (mVelocity));
 	}
 }
 
@@ -86,4 +86,9 @@ void Missile::SetMove(bool setTo)
 void Missile::SetGravEffect(float effect)
 {
 	mGravEffect = Ogre::Vector3(0,effect,0);
+}
+
+void Missile::SetSpeed(float speed)
+{
+	mSpeed = speed;
 }

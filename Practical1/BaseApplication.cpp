@@ -33,7 +33,8 @@ BaseApplication::BaseApplication(void)
 	mInputManager(0),
 	mMouse(0),
 	mKeyboard(0),
-	mOverlaySystem(0)
+	mOverlaySystem(0),
+	missileLaunchSpeed(0)
 {
 }
 
@@ -285,7 +286,7 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		mCameraMan->frameRenderingQueued(evt);   // if dialog isn't up, then update the camera
 		if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
 		{
-			mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(mCamera->getDerivedPosition().x));
+			mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(missileLaunchSpeed));
 			mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(mCamera->getDerivedPosition().y));
 			mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(mCamera->getDerivedPosition().z));
 			mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().w));
@@ -310,10 +311,18 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 {
+	if(arg.key == OIS::KC_NUMPAD2)
+	{
+		missileLaunchSpeed += 0.1f;
+	}
+	else if(arg.key == OIS::KC_NUMPAD8)
+	{
+		missileLaunchSpeed -= 0.1f;
+	}
 	
 	if(arg.key == OIS::KC_SPACE)
 	{ 
-		missileVector.at(0)->setVelocity(myCannon->getGunBarrel()->getOrientation() * Ogre::Vector3::UNIT_Y);
+		missileVector.at(0)->setVelocity((myCannon->getGunBarrel()->getOrientation() * Ogre::Vector3::UNIT_Y) * missileLaunchSpeed);
 		missileVector.at(0)->SetGravEffect(gravEffect);
 		missileVector.at(0)->SetMove(true); 
 	}

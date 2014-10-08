@@ -23,6 +23,7 @@ public:
 	void Reset(Cannon* myCannon);
 	void SetMove(bool setTo);
 	void SetGravEffect(float effect);
+	void SetSpeed(float speed);
 	
 private:
 	Ogre::Vector3 mVelocity;
@@ -30,6 +31,7 @@ private:
 	bool mAllowedMove;
 	bool mNeedsReset;
 	Ogre::Vector3 mGravEffect;
+	float mSpeed;
 };
 
 #endif

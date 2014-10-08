@@ -84,6 +84,7 @@ protected:
 	Cannon* myCannon; // object of type pointer to Cannon class
 	bool moveTurret;
 	float gravEffect;
+	float missileLaunchSpeed;
 	std::vector<Missile*> missileVector;
 
 };
