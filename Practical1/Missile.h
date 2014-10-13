@@ -19,7 +19,7 @@ public:
 
 	Missile(Ogre::SceneManager* mSceneMgr,float cubeLength,double cylLength,Cannon* myCannon);
 	~Missile();
-	void Update();
+	void Update(double timeSinceLastFrame);
 	void Reset(Cannon* myCannon);
 	void SetMove(bool setTo);
 	void SetGravEffect(float effect);

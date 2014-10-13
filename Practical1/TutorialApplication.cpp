@@ -89,7 +89,7 @@ void TutorialApplication::createScene(void)
 
 	myCannon = new Cannon(cylNode,Ogre::Vector3(0,cubeLength+cylLength/2,0),cubeLength,(float)cylRadius,(float)cylLength,(float) mSceneMgr->getSceneNode("CylinderNode")->getPosition().y);
 	
-	missileVector.push_back(new Missile(mSceneMgr,cubeLength,cylLength,myCannon));
+	missile = new Missile(mSceneMgr,cubeLength,cylLength,myCannon);
 }
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

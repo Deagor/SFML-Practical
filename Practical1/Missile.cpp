@@ -63,13 +63,13 @@ Missile::~Missile(void)
 
 }
 
-void Missile::Update()
+void Missile::Update(double timeSinceLastFrame)
 {
 	if(mAllowedMove)
 	{
-		mVelocity += mGravEffect;
+		mVelocity += (mGravEffect * timeSinceLastFrame);
 		Ogre::Vector3 currentPos = mNode->getPosition();
-		mNode->setPosition(currentPos + (mVelocity));
+		mNode->setPosition(currentPos + (mVelocity * timeSinceLastFrame));
 	}
 }
 

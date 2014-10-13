@@ -34,7 +34,8 @@ BaseApplication::BaseApplication(void)
 	mMouse(0),
 	mKeyboard(0),
 	mOverlaySystem(0),
-	missileLaunchSpeed(0)
+	missileLaunchSpeed(6),
+	gravEffect(-9.81f)
 {
 }
 
@@ -147,11 +148,11 @@ void BaseApplication::createFrameListener(void)
 	// create a params panel for displaying sample details
 	Ogre::StringVector items;
 	items.push_back("cam.pX");
-	items.push_back("cam.pY");
-	items.push_back("cam.pZ");
+	items.push_back("missilex");
+	items.push_back("missiley");
 	items.push_back("");
-	items.push_back("cam.oW");
-	items.push_back("cam.oX");
+	items.push_back("missilez");
+	items.push_back("MaxHeight");
 	items.push_back("cam.oY");
 	items.push_back("cam.oZ");
 	items.push_back("");
@@ -266,7 +267,6 @@ bool BaseApplication::setup(void)
 //-------------------------------------------------------------------------------------
 bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
-	gravEffect = -9.81f * evt.timeSinceLastFrame;
 	if(mWindow->isClosed())
 		return false;
 
@@ -287,10 +287,10 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
 		{
 			mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(missileLaunchSpeed));
-			mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(mCamera->getDerivedPosition().y));
-			mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(mCamera->getDerivedPosition().z));
-			mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().w));
-			mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().x));
+			mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(missile->getPosition().x));
+			mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(missile->getPosition().y));
+			mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(missile->getPosition().z));
+			mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(estimatedHeightOfShot));
 			mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().y));
 			mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().z));
 		}
@@ -299,13 +299,11 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	{// Call the rotate method from the Cannon class
 		myCannon->rotate(mKeyboard);  
 	}
+	if(missile->getNeedsReset()){missile->Reset(myCannon);}
 
-	missileVector.at(0)->Update();
-	if(missileVector.at(0)->getNeedsReset())
-	{
-		missileVector.at(0)->Reset(myCannon);
-	}
-
+	missile->Update(evt.timeSinceLastFrame);
+	
+	
 	return true;
 }
 //-------------------------------------------------------------------------------------
@@ -313,21 +311,30 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 {
 	if(arg.key == OIS::KC_NUMPAD2)
 	{
-		missileLaunchSpeed += 0.1f;
+		missileLaunchSpeed += 1;
 	}
 	else if(arg.key == OIS::KC_NUMPAD8)
 	{
-		missileLaunchSpeed -= 0.1f;
+		missileLaunchSpeed -= 1;
 	}
-	
+
 	if(arg.key == OIS::KC_SPACE)
 	{ 
-		missileVector.at(0)->setVelocity((myCannon->getGunBarrel()->getOrientation() * Ogre::Vector3::UNIT_Y) * missileLaunchSpeed);
-		missileVector.at(0)->SetGravEffect(gravEffect);
-		missileVector.at(0)->SetMove(true); 
+		missile->setVelocity(((myCannon->getGunBarrel()->getOrientation() * Ogre::Vector3::UNIT_Y) * missileLaunchSpeed));
+
+		Ogre::Vector3 cannondir = myCannon->getGunBarrel()->getOrientation() * Ogre::Vector3::UNIT_Y;
+		angleOfShot = Ogre::Math::ACos(cannondir.y);
+	
+		missile->SetGravEffect(gravEffect);
+		missile->SetMove(true); 
+		//estimatedHeightOfShot = ((0 - missileLaunchSpeed) / (2 * gravEffect)) + 10;
+		estimatedHeightOfShot = ((((missileLaunchSpeed * missileLaunchSpeed) * ((Ogre::Math::Sin(angleOfShot.valueDegrees())) * (Ogre::Math::Sin(angleOfShot.valueDegrees())))) / (2 * -gravEffect))) + 10;
+
 	}
-	if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
-	if(arg.key == OIS::KC_L){missileVector.at(0)->Reset(myCannon); missileVector.at(0)->SetMove(false);}
+
+	if (mTrayMgr->isDialogVisible()) {return true;}   // don't process any more keys if dialog is up
+
+	if(arg.key == OIS::KC_L){missile->Reset(myCannon); missile->SetMove(false);}
 	switch(arg.key)
 	{
 	case OIS::KC_X:
@@ -336,14 +343,14 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 	case OIS::KC_U:
 		// Allow the cannon to rotate if X, C, Y or U keys are pressed
 		moveTurret=true;
-		if(!missileVector.at(0)->isAllowedMove())
-		{missileVector.at(0)->setNeedsReset(true);}
+		if(!missile->isAllowedMove())
+		{missile->setNeedsReset(true);}
 		break;
 	default:
 		// Don't allow cannon to move otherwise
 		moveTurret=false;
-		if(!missileVector.at(0)->isAllowedMove())
-		{missileVector.at(0)->setNeedsReset(false);}
+		if(!missile->isAllowedMove())
+		{missile->setNeedsReset(false);}
 		break;
 	}
 
