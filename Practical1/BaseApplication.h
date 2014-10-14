@@ -88,6 +88,9 @@ protected:
 	Missile* missile;
 	Ogre::Radian angleOfShot;
 	float estimatedHeightOfShot;
+	bool hit;
+	int shotsTaken;
+	Target* target;
 
 };
 

@@ -117,6 +117,7 @@ copy /Y "resources.cfg" "$(OutDir)"</Command>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Target.cpp" />
     <ClCompile Include="TutorialApplication.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
@@ -126,6 +127,7 @@ copy /Y "resources.cfg" "$(OutDir)"</Command>
     <ClInclude Include="Cannon.h" />
     <ClInclude Include="Missile.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Target.h" />
     <ClInclude Include="TutorialApplication.h" />
   </ItemGroup>
   <ItemGroup>

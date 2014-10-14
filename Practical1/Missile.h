@@ -9,6 +9,7 @@ public:
 	Ogre::SceneNode* getNode();
 	Ogre::Vector3 getPosition();
 	Ogre::Vector3 getVelocity();
+	Ogre::Entity* getEntity();
 	bool isAllowedMove();
 	bool getNeedsReset();
 
@@ -32,6 +33,7 @@ private:
 	bool mNeedsReset;
 	Ogre::Vector3 mGravEffect;
 	float mSpeed;
+	Ogre::Entity* missile;
 };
 
 #endif

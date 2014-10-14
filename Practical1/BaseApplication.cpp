@@ -35,7 +35,9 @@ BaseApplication::BaseApplication(void)
 	mKeyboard(0),
 	mOverlaySystem(0),
 	missileLaunchSpeed(6),
-	gravEffect(-9.81f)
+	gravEffect(-9.81f),
+	hit(false),
+	shotsTaken(0)
 {
 }
 
@@ -291,8 +293,8 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 			mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(missile->getPosition().y));
 			mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(missile->getPosition().z));
 			mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(estimatedHeightOfShot));
-			mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().y));
-			mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().z));
+			mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(hit));
+			mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(shotsTaken));
 		}
 	}
 	if (moveTurret) 
@@ -302,7 +304,11 @@ bool BaseApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	if(missile->getNeedsReset()){missile->Reset(myCannon);}
 
 	missile->Update(evt.timeSinceLastFrame);
-	
+	if(missile->getEntity()->getWorldBoundingBox().intersects(target->getEntity()->getWorldBoundingBox()))
+	{
+		missile->SetMove(false);
+		if(!hit){hit = true;}
+	}
 	
 	return true;
 }
@@ -327,14 +333,25 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
 	
 		missile->SetGravEffect(gravEffect);
 		missile->SetMove(true); 
-		//estimatedHeightOfShot = ((0 - missileLaunchSpeed) / (2 * gravEffect)) + 10;
-		estimatedHeightOfShot = ((((missileLaunchSpeed * missileLaunchSpeed) * ((Ogre::Math::Sin(angleOfShot.valueDegrees())) * (Ogre::Math::Sin(angleOfShot.valueDegrees())))) / (2 * -gravEffect))) + 10;
 
+		estimatedHeightOfShot = ((((missileLaunchSpeed * missileLaunchSpeed) * ((Ogre::Math::Sin(angleOfShot.valueDegrees())) * (Ogre::Math::Sin(angleOfShot.valueDegrees())))) / (2 * -gravEffect))) + 10;
+		shotsTaken++;
 	}
 
 	if (mTrayMgr->isDialogVisible()) {return true;}   // don't process any more keys if dialog is up
 
-	if(arg.key == OIS::KC_L){missile->Reset(myCannon); missile->SetMove(false);}
+	if(arg.key == OIS::KC_L){missile->Reset(myCannon); missile->SetMove(false);
+	}
+	if(arg.key == OIS::KC_K)
+	{
+		missile->Reset(myCannon); 
+		missile->SetMove(false);
+		hit = false;
+		shotsTaken = 0;
+		mSceneMgr->destroyEntity("cube2");
+		mSceneMgr->destroySceneNode("cube2Node");
+		target = new Target(mSceneMgr);
+	}
 	switch(arg.key)
 	{
 	case OIS::KC_X:

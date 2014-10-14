@@ -18,6 +18,7 @@
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
+#include "Target.h"
 #include "Cannon.h"
 #include "Missile.h"
 #include "BaseApplication.h"

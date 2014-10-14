@@ -88,7 +88,7 @@ void TutorialApplication::createScene(void)
 	cylNode->setPosition(0,cylLength/2 + cubeLength,0);
 
 	myCannon = new Cannon(cylNode,Ogre::Vector3(0,cubeLength+cylLength/2,0),cubeLength,(float)cylRadius,(float)cylLength,(float) mSceneMgr->getSceneNode("CylinderNode")->getPosition().y);
-	
+	target = new Target(mSceneMgr);
 	missile = new Missile(mSceneMgr,cubeLength,cylLength,myCannon);
 }
 

@@ -19,6 +19,8 @@ Ogre::Vector3 Missile::getVelocity()
 	return mVelocity;
 }
 
+Ogre::Entity* Missile::getEntity(){return missile;}
+
 bool Missile::getNeedsReset() { return mNeedsReset;}
 
 bool Missile::isAllowedMove()
@@ -46,7 +48,8 @@ Missile::Missile(Ogre::SceneManager* mSceneMgr,float cubeLength,double cylLength
 {
 	static int NUM_MISSILES_CREATED = 0;
 	//Create missile and it's node
-	Ogre::Entity* missile = mSceneMgr->createEntity("Missile", "Sphere.mesh");
+	missile = mSceneMgr->createEntity("Missile", "Sphere.mesh");
+
 	missile->setMaterialName("Examples/Chrome");  
 	mNode = mSceneMgr->getRootSceneNode()->createChildSceneNode( "MissileNode" + NUM_MISSILES_CREATED,Ogre::Vector3::Vector3(100,0,0) );
 	mNode->attachObject( missile );
