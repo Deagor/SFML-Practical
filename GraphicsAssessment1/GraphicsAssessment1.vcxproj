@@ -53,6 +53,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SFML_SDK)/include</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -84,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BouncingBox.h" />
-    <ClInclude Include="BouncingObject.h" />
+    <ClInclude Include="BouncingThing.h" />
     <ClInclude Include="BouncingTriangle.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -92,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BouncingBox.cpp" />
+    <ClCompile Include="BouncingThing.cpp" />
     <ClCompile Include="BouncingTriangle.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="GraphicsAssessment1.cpp" />

@@ -1,16 +1,19 @@
-#ifndef BOUNCINGTRIGANLE_H
+#ifndef BOUNCINGTRIANGLE_H
 #define BOUNCINGTRIANGLE_H
 
-#include "BouncingObject.h"
+#include "BouncingThing.h"
 
-class BouncingTriangle : public BouncingObject
+class BouncingTriangle : public BouncingThing
 {
 public:
 	BouncingTriangle();
 	~BouncingTriangle();
+
 	void Move();
 	void CheckBounds();
 
+private:
+	float mSpeed;
 };
 
 #endif

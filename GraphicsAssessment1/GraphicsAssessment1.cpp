@@ -3,6 +3,11 @@
 
 #include "stdafx.h"
 
+#include "CollisionManager.h"
+#include "BouncingBox.h"
+#include "BouncingTriangle.h"
+#include <iostream>
+
 #ifdef _DEBUG
 #pragma comment(lib,"sfml-graphics-d.lib")
 #pragma comment(lib,"sfml-audio-d.lib")
@@ -19,9 +24,6 @@
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")
 
-#include "BouncingTriangle.h"
-#include "BouncingBox.h"
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	srand(time(NULL));
@@ -32,6 +34,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	sf::RenderWindow* pWindow = &window;
 	window.setFramerateLimit(120);
 
+	CollisionManager CollisionMgr;
 	BouncingTriangle triangles[NUM_TRIANGLES];
 	BouncingBox boxes[NUM_BOXES];
 
@@ -77,16 +80,39 @@ int _tmain(int argc, _TCHAR* argv[])
 		window.clear();
 
 		//Draw Frame
-		for (int i = 0; i < NUM_TRIANGLES; i++)
-		{
-			triangles[i].Draw(pWindow);
-			triangles[i].Move();
-		}
 		for (int i = 0; i < NUM_BOXES; i++)
 		{
 			boxes[i].Draw(pWindow);
 			boxes[i].Move();
 		}
+		for (int i = 0; i < NUM_TRIANGLES; i++)
+		{
+			triangles[i].Draw(pWindow);
+			triangles[i].Move();
+			for (int z = 0; z < NUM_TRIANGLES; z++)
+			{
+				if (z == i){ continue; }
+				if (triangles[i].getBoundingBox().intersects(triangles[z].getBoundingBox()))
+				{
+					CollisionManager::checkCollisionsSAT(triangles[i], triangles[z]);
+				}
+			}
+			for (int z = 0; z < NUM_BOXES; z++)
+			{
+				if (triangles[i].getBoundingBox().intersects(boxes[z].getBoundingBox()))
+				{
+					CollisionManager::checkCollisionsSAT(triangles[i], boxes[z]);
+				}
+				if (z == i){ continue; }
+				if (boxes[i].getBoundingBox().intersects(boxes[z].getBoundingBox()))
+				{
+					CollisionManager::checkCollisionsSAT(boxes[i], boxes[z]);
+				}
+			}
+		}
+
+		
+		
 
 
 		// Finally, display rendered frame on screen

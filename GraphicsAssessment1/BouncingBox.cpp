@@ -2,12 +2,13 @@
 #include "BouncingBox.h"
 
 
-BouncingBox::BouncingBox()
+BouncingBox::BouncingBox() : mSpeed(2)
 {
-
-	velocityX = (rand() % 20 - 10);
-	velocityY = (rand() % 20 - 10);
-
+	
+	float velocityX = (rand() % 20 - 10);
+	float velocityY = (rand() % 20 - 10);
+	mVelocity = sf::Vector2f(velocityX, velocityY);
+	mVelocity = CollisionManager::Normalize(mVelocity);
 	shape.setPointCount(4);
 
 	mPosition.x = rand() % 700 + 50;
@@ -22,6 +23,8 @@ BouncingBox::BouncingBox()
 	shape.setPoint(1, mPosition + p2);
 	shape.setPoint(2, mPosition + p3);
 	shape.setPoint(3, mPosition + p4);
+	
+	mBoundingBox = shape.getGlobalBounds();
 
 	setRotationAmount(5);
 
@@ -36,8 +39,7 @@ BouncingBox::~BouncingBox()
 void BouncingBox::Move()
 {
 	rotationTransform.rotate(rotationAmount);
-	mPosition.x += velocityX;
-	mPosition.y += velocityY;
+	mPosition += mVelocity;
 
 	sf::Vector2f p1 = rotationTransform * sf::Vector2f(cos(DTR * 45) * RECTANGLE_SIZE, sin(DTR * 45) * RECTANGLE_SIZE);
 	sf::Vector2f p2 = rotationTransform * sf::Vector2f(cos(DTR * 135) * RECTANGLE_SIZE, sin(DTR * 135) * RECTANGLE_SIZE);
@@ -48,7 +50,7 @@ void BouncingBox::Move()
 	shape.setPoint(1, mPosition + p2);
 	shape.setPoint(2, mPosition + p3);
 	shape.setPoint(3, mPosition + p4);
-
+	mBoundingBox = shape.getGlobalBounds();
 	CheckBounds();
 
 }
@@ -60,13 +62,13 @@ void BouncingBox::CheckBounds()
 		|| shape.getPoint(2).x <= 0 || shape.getPoint(2).x >= 800
 		|| shape.getPoint(3).x <= 0 || shape.getPoint(3).x >= 800)
 	{
-		velocityX *= -1;
+		mVelocity.x *= -1;
 	}
 	if (shape.getPoint(0).y <= 0 || shape.getPoint(0).y >= 600
 		|| shape.getPoint(1).y <= 0 || shape.getPoint(1).y >= 600
 		|| shape.getPoint(2).y <= 0 || shape.getPoint(2).y >= 600
 		|| shape.getPoint(3).y <= 0 || shape.getPoint(3).y >= 600)
 	{
-		velocityY *= -1;
+		mVelocity.y *= -1;
 	}
 }

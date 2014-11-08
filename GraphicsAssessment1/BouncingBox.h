@@ -1,9 +1,10 @@
 #ifndef BOUNCINGBOX_H
 #define BOUNCINGBOX_H
 
-#include "BouncingObject.h"
+#include "BouncingThing.h"
+#include "CollisionManager.h"
 
-class BouncingBox : public BouncingObject
+class BouncingBox : public BouncingThing
 {
 
 public:
@@ -11,6 +12,9 @@ public:
 	~BouncingBox();
 	void Move();
 	void CheckBounds();
+
+private:
+	float mSpeed;
 
 };
 
