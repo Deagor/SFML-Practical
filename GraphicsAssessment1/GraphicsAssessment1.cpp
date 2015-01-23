@@ -84,6 +84,14 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			boxes[i].Draw(pWindow);
 			boxes[i].Move();
+			for (int z = 0; z < NUM_BOXES; z++)
+			{
+				if (z == i){ continue; }
+				if (boxes[i].getBoundingBox().intersects(boxes[z].getBoundingBox()))
+				{
+					CollisionManager::checkCollisionsSAT(boxes[i], boxes[z]);
+				}
+			}
 		}
 		for (int i = 0; i < NUM_TRIANGLES; i++)
 		{
@@ -103,11 +111,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				{
 					CollisionManager::checkCollisionsSAT(triangles[i], boxes[z]);
 				}
-				if (z == i){ continue; }
-				if (boxes[i].getBoundingBox().intersects(boxes[z].getBoundingBox()))
-				{
-					CollisionManager::checkCollisionsSAT(boxes[i], boxes[z]);
-				}
+				
 			}
 		}
 

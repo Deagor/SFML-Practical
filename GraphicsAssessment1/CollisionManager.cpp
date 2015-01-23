@@ -24,7 +24,6 @@ bool CollisionManager::checkCollisionsSAT(BouncingThing& object1, BouncingThing&
 		edge = Normalize(edge);
 		shape1Edges.push_back(edge);
 	}
-
 	for (int i = 0; i < obj2Shape.getPointCount(); i++)
 	{
 		edge = obj2Shape.getPoint(i) - obj2Shape.getPoint((i + 1) % obj2Shape.getPointCount());
@@ -99,7 +98,7 @@ void CollisionManager::handleCollision(BouncingThing& object1, BouncingThing& ob
 	NVect = Normalize(NVect);
 
 	sf::Vector2f exitVelocity1 = object1.getVelocity() - (2 * (dot(NVect, object1.getVelocity())) * NVect);
-	sf::Vector2f exitVelocity2 = object2.getVelocity() - (2 * (dot(NVect, object2.getVelocity())) * NVect);
+	sf::Vector2f exitVelocity2 = object2.getVelocity() - (2 * (dot(-NVect, object2.getVelocity())) * -NVect);
 
 	object1.setVelocity(exitVelocity1);
 	object2.setVelocity(exitVelocity2);
